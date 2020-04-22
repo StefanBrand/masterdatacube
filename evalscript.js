@@ -1,15 +1,7 @@
 //VERSION=3
 //double curly brackets render as single curly brackets in python format strings
 
-var debug = []
-
-var ic = {{  // index components
-  'NDVI':  ["B08", "B04"],
-  "GNDVI": ["B08", "B03"],
-  "BNDVI": ["B08", "B02"],
-  "NDSI":  ["B11", "B12"],
-  "NDWI":  ["B03", "B08"]
-}}
+/* FUNCTIONS */
 
 function setup(ds) {{
   return {{
@@ -25,7 +17,7 @@ function setup(ds) {{
 function validate (sample) {{
   if (sample.dataMask!=1) return false;
   
-  var scl = Math.round(sample.SCL);
+  var scl = sample.SCL//Math.round(sample.SCL);
   
   if (scl === 3) {{ // SC_CLOUD_SHADOW
     return false;
@@ -65,6 +57,42 @@ function interpolatedValue(arr)
   return Math.round(sum/arr.length);
 }}
 
+function fillResultArray(i, int_bands)
+{{
+  for (var k=0; k<bands.length; k++) {{
+    if(int_bands[bands[k]].length==0) results[bands[k]][i] = 0
+    else results[bands[k]][i] = interpolatedValue(int_bands[bands[k]])
+  }}
+  
+  for (var k=0; k<ixs.length; k++) {{
+    if(ixs[k]!=="CVI") {{
+        results[ixs[k]][i] = 65535*calculateIndex(
+            results[ic[ixs[k]][0]][i],
+            results[ic[ixs[k]][1]][i]
+        ) 
+    }} else {{
+        // output sample type for CVI is FLOAT32
+        results[ixs[k]][i] = results["B08"][i]*results["B05"][i] / (results["B03"][i]*results["B03"][i])
+    }}
+  }}
+}}
+
+
+/* MAIN */
+
+var debug = []
+
+var ic = {{  // index components
+  "NDVI":  ["B08", "B04"],
+  "GNDVI": ["B08", "B03"],
+  "BNDVI": ["B08", "B02"],
+  "NDSI":  ["B11", "B12"],
+  "NDWI":  ["B03", "B08"]
+}}
+
+var bands = Object.keys({int_bands})
+var ixs = {indices}
+
 var results = {results_object}
 
 // We split each month into two halves. This will make it easier to append months to data cube later
@@ -79,7 +107,8 @@ function evaluatePixel(samples, scenes, inputMetadata, customData, outputMetadat
   
   var is_in_last_half_of_month = endtime.getUTCDate() >= day_of_new_interval
   var i = 0; // interval number
-  var int_bands = {int_bands}
+  var int_bands_empty = {int_bands}
+  var int_bands = int_bands_empty
   
   for (var j = 0; j < samples.length; j++) {{
     
@@ -92,11 +121,7 @@ function evaluatePixel(samples, scenes, inputMetadata, customData, outputMetadat
     {{
       fillResultArray(i, int_bands)
       
-      //reset values
-      for (var int_b in int_bands) {{
-        int_bands[int_b] = []
-      }}
-      
+      int_bands = int_bands_empty //reset values
       is_in_last_half_of_month = !is_in_last_half_of_month;
       i++;
     }}
@@ -104,8 +129,8 @@ function evaluatePixel(samples, scenes, inputMetadata, customData, outputMetadat
     if (validate(samples[j]))
     {{
       // push input samples into their respective arrays
-      for (var int_b in int_bands) {{
-        int_bands[int_b].push(samples[j][int_b])
+      for (var k=0; k<bands.length; k++) {{
+        int_bands[bands[k]].push(samples[j][bands[k]])
       }}
     }}
     
@@ -115,27 +140,6 @@ function evaluatePixel(samples, scenes, inputMetadata, customData, outputMetadat
   fillResultArray(i, int_bands);
   
   return results
-}}
-
-function fillResultArray(i, int_bands)
-{{
-  for (var b in int_bands) {{
-    if(int_bands[b].length==0) results[b][i] = 0
-    else results[b][i] = interpolatedValue(int_bands[b])
-  }}
-  
-  for (var ix of {indices}) {{
-    if(ic.hasOwnProperty(ix)) {{
-      results[ix][i] = 65535*calculateIndex(
-        results[ic[ix][0]][i],
-        results[ic[ix][1]][i]
-      )
-    }}
-    if(ix==="CVI"){{
-      // output sample type for CVI is FLOAT32
-      results[ix][i] = results["B08"][i]*results["B05"][i] / (results["B03"][i]*results["B03"][i])
-    }}
-  }}
 }}
 
 function updateOutputMetadata(scenes, inputMetadata, outputMetadata) {{
