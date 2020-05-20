@@ -14,7 +14,7 @@ def date_interval_endpoints(starttime, endtime, day_of_new_interval):
     from datetime import datetime
     from dateutil.relativedelta import relativedelta as rdelta
     from dateutil.rrule import rrule, MONTHLY
-    import pandas as pd
+    from pandas import to_datetime
     
     starttime = datetime(*starttime.timetuple()[:3],0,0)
     endtime = datetime(*endtime.timetuple()[:3],0,0)
@@ -22,7 +22,7 @@ def date_interval_endpoints(starttime, endtime, day_of_new_interval):
     
     dates = list(rrule(MONTHLY, dtstart=starttime, until=endtime, bymonthday=[1,d-1,d,-1]))
     dates = [starttime] + dates if not dates[0].day  == 1 else dates
-    dates += [endtime] if not dates[-1].day == pd.to_datetime(dates[-1]).daysinmonth else dates
+    dates += [endtime] if not dates[-1].day == to_datetime(dates[-1]).daysinmonth else dates
 
     for i in range(1,len(dates),2):
         dates[i] = dates[i]+rdelta(hour=23, minute=59, second=59)
