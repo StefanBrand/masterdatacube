@@ -1,0 +1,27 @@
+process: xarray_export.py
+input:
+  satellite_cube:
+    format: S2AWS
+    start_time: 2017-09-01
+    end_time: 2018-05-15
+    level: L2A
+    with_cloudmasks: true
+    metadata_concurrency: true
+    max_products: 3700
+    remote_timeout: 60
+    cache:
+      path: /mnt/data/cache
+      intersection_percent: 0.5
+      bands: [2, 3, 4, 5, 6, 7, 8, 9, 11, 12]
+output:
+  format: xarray
+  path: s3://eox-masterdatacube/mapchete_cubes/
+  dtype: uint16
+  storage: zarr
+pyramid:
+  grid:
+    shape: [115, 9]
+    bounds: [186210.0, -9800.0, 923490.0, 9411000.0]
+    is_global: False
+    epsg: 32633
+zoom_levels: 9
