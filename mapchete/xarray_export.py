@@ -85,6 +85,8 @@ def execute(
             eps = date_interval_endpoints(starttime, endtime, 16)
             int_idx = IntervalIndex.from_arrays(eps[::2], eps[1::2])
             avg_cube = cube.groupby_bins('timestamps', bins=int_idx).mean('timestamps')
+            avg_cube = avg_cube.rename({'timestamps_bins': 'time'}) # xcube Dataset spec
+            avg_cube.coords['time'] = int_idx.mid # zarr cannot have IntervalIndex as coords
 
             for idx, (ic1, ic2) in ics.items():
                 if ic1 in avg_cube and ic2 in avg_cube:
@@ -99,7 +101,7 @@ def execute(
             avg_cube = avg_cube.astype(np.uint16)
 
             # convert to xarray.DataArray again for writing
-            return avg_cube.rename({'timestamps_bins': 'time'}).to_array("bands")
+            return avg_cube.to_array("bands")
 
         except EmptyStackException:
             logger.debug("tile empty")
