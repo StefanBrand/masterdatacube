@@ -2,8 +2,8 @@ process: xarray_export.py
 input:
   satellite_cube:
     format: S2AWS
-    start_time: 2017-09-01
-    end_time: 2018-05-15
+    start_time: 2019-09-01
+    end_time: 2019-10-31
     level: L2A
     with_cloudmasks: true
     metadata_concurrency: true
@@ -24,4 +24,4 @@ pyramid:
     bounds: [186210.0, -9800.0, 923490.0, 9411000.0]
     is_global: False
     epsg: 32633
-zoom_levels: 9
+zoom_levels: 5
