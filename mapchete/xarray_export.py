@@ -82,7 +82,7 @@ def execute(
             endtime = datetime(*max(in_cube.timestamps).timetuple()[:3], 0, 0, 0)
 
             # new interval starts at day 16 of month
-            eps = date_interval_endpoints(starttime, endtime, 16)
+            eps = date_interval_endpoints(*sat._time_range, 16)
             int_idx = IntervalIndex.from_arrays(eps[::2], eps[1::2])
             avg_cube = cube.groupby_bins('timestamps', bins=int_idx).mean('timestamps')
             avg_cube = avg_cube.rename({'timestamps_bins': 'time'}) # xcube Dataset spec
