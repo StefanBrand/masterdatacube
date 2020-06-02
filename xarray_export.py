@@ -139,7 +139,7 @@ def date_interval_endpoints(starttime, endtime, day_of_new_interval):
     dates = (
         dates + [endtime]
         if not dates[-1].day == to_datetime(dates[-1]).daysinmonth
-        and not dates[-1].day == 15)
+        and not dates[-1].day == 15
         else dates
     )
 
