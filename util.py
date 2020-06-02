@@ -21,12 +21,17 @@ def date_interval_endpoints(starttime, endtime, day_of_new_interval):
     d=day_of_new_interval
 
     dates = list(rrule(MONTHLY, dtstart=starttime, until=endtime, bymonthday=[1,d-1,d,-1]))
-    dates = [starttime] + dates if (
-        not dates[0].day == 1 and
-        not dates[0].day == d) else dates
-    dates = dates + [endtime] if (
-        not dates[-1].day == to_datetime(dates[-1]).daysinmonth and
-        not dates[-1].day == 15) else dates
+    dates = (
+        [starttime] + dates
+        if not dates[0].day == 1 and not dates[0].day == d
+        else dates
+    )
+    dates = (
+        dates + [endtime]
+        if not dates[-1].day == to_datetime(dates[-1]).daysinmonth
+        and not dates[-1].day == 15)
+        else dates
+    )
 
     for i in range(1,len(dates),2):
         dates[i] = dates[i]+rdelta(hour=23, minute=59, second=59)
