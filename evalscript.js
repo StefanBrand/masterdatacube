@@ -3,7 +3,7 @@
 
 /* FUNCTIONS */
 
-function setup(ds) {{
+function setup() {{
   return {{
     input: [{{
       bands: {bands}, 
@@ -99,7 +99,7 @@ var results = {results_object}
 var day_of_new_interval = {day_of_new_interval}
 var endtime = new Date({enddate_unix}) // UNIX epoch in ms
 
-function evaluatePixel(samples, scenes, inputMetadata, customData, outputMetadata) {{
+function evaluatePixel(samples, scenes) {{
   
   //Debug part returning "something" if there are no  valid samples (no observations)
   if (!samples.length)
@@ -142,7 +142,7 @@ function evaluatePixel(samples, scenes, inputMetadata, customData, outputMetadat
   return results
 }}
 
-function updateOutputMetadata(scenes, inputMetadata, outputMetadata) {{
+function updateOutputMetadata(scenes, outputMetadata) {{
   outputMetadata.userData = {{
     "date_created": Date(),
     "metadata": scenes.map(s => {{
