@@ -24,4 +24,5 @@ pyramid:
     bounds: [186210.0, -9800.0, 923490.0, 9411000.0]
     is_global: False
     epsg: 32633
+  metatiling: 2
 zoom_levels: 5
