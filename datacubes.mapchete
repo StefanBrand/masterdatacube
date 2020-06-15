@@ -15,7 +15,7 @@ input:
       bands: [2, 3, 4, 5, 6, 7, 8, 9, 11, 12]
 output:
   format: xarray
-  path: s3://eox-masterdatacube/mapchete_cubes/MAB_04_10/
+  path: s3://eox-masterdatacube/mapchete_cubes/MAB_04_11/
   dtype: uint16
   storage: zarr
 pyramid:
