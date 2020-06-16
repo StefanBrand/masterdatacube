@@ -1,6 +1,6 @@
 process: xarray_export.py
 input:
-  aoi: s3://eox-masterdatacube/mapchete_cubes/mab_32633.geojson
+  aoi: s3://eox-masterdatacube/mapchete_cubes/mab.geojson
   satellite_cube:
     format: S2AWS
     start_time: 2019-09-01
@@ -16,7 +16,7 @@ input:
       bands: [2, 3, 4, 5, 6, 7, 8, 9, 11, 12]
 output:
   format: xarray
-  path: s3://eox-masterdatacube/mapchete_cubes/MAB_04_12/
+  path: s3://eox-masterdatacube/mapchete_cubes/MAB_04_13/
   dtype: uint16
   storage: zarr
 pyramid:
