@@ -43,9 +43,8 @@ def execute(
     """
     if "aoi" in mp.params["input"]:
         with mp.open("aoi") as aoi:
-            for f in aoi.read():
-                if not shape(f["geometry"]).intersects(mp.tile.bbox):
-                    return "empty"
+            if not len(aoi.read()):
+                return "empty"
 
     with mp.open("satellite_cube") as sat:
         try:
