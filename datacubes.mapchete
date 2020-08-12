@@ -4,7 +4,7 @@ input:
   satellite_cube:
     format: S2AWS
     start_time: 2019-09-01
-    end_time: 2019-10-31
+    end_time: 2019-09-30
     level: L2A
     with_cloudmasks: true
     metadata_concurrency: true
@@ -16,7 +16,7 @@ input:
       bands: [2, 3, 4, 5, 6, 7, 8, 9, 11, 12]
 output:
   format: xarray
-  path: s3://eox-masterdatacube/mapchete_cubes/MAB_04_13/
+  path: s3://eox-masterdatacube/mapchete_cubes/mdc_02_01/
   dtype: uint16
   storage: zarr
 pyramid:
