@@ -3,3 +3,4 @@
 *.csv
 *.geojson
 __pycache__
+*.txt
