@@ -8,6 +8,8 @@ Usage: ./gen_process_zones.py datacubes.mapchete -b <left>, <bottom>, <right>, <
 import click
 from tilematrix import TilePyramid
 import yaml
+from shapely import speedups
+speedups.disable()
 
 
 @click.command()
@@ -29,7 +31,11 @@ import yaml
     "process zone bounds. (default: 5, e.g. if max zoom is 13, process zoom levels will "
     "be tiles from zoom 8.)"
 )
-def gen_process_zones(mapchete_file, bounds=None, zoom_delta=None):
+@click.option(
+    "--wkt/--no-wkt",
+    help="Output WKT strings instead of bounds"
+)
+def gen_process_zones(mapchete_file, bounds=None, zoom_delta=None, wkt=None):
     """Generate bounding boxes of process zones from mapchete config."""
     with open(mapchete_file) as src:
         config = yaml.load(src.read())
@@ -47,8 +53,12 @@ def gen_process_zones(mapchete_file, bounds=None, zoom_delta=None):
             "zoom_delta cannot be larger than process max zoom ({})".format(max_zoom)
         )
 
+
     for tile in tp.tiles_from_bounds(bounds, process_zone_zoom):
-        click.echo(" ".join(list(map(str, tile.bounds()))))
+        if(wkt):
+            click.echo(str(tile.bbox()))
+        else:
+            click.echo(" ".join(list(map(str,tile.bounds()))))
 
 
 if __name__ == '__main__':
